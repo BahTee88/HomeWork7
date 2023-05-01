@@ -2,6 +2,7 @@ package com.example.homework7;
 
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -13,18 +14,30 @@ import java.text.DecimalFormat;
 public class MainActivity extends AppCompatActivity {
     private TextView textView;
     private  Double first, second, result;
-    private MaterialButton mbbtn;
+    View  nextMenu;
     private Boolean isOperationClick;
     private String operation;
 
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         textView = findViewById(R.id.text_view);
-        mbbtn = findViewById(R.id.btn_one);
+        nextMenu = findViewById(R.id.next_menu);
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        nextMenu.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this,SecondActivity.class);
+            String result = ((TextView) findViewById(R.id.text_view)).getText().toString();
+            intent.putExtra("result",result);
+            startActivity(intent);
+
+        });
     }
 
     private void appendNumber(String number) {
@@ -38,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     public void onNumberClick(View view) {
         int id = view.getId();
         if (id == R.id.btn_one) {
+            nextMenu.setVisibility(View.INVISIBLE);
             appendNumber("1");
         } else if (id == R.id.btn_two) {
             appendNumber("2");
@@ -126,6 +140,8 @@ public class MainActivity extends AppCompatActivity {
                         break;
                 }
                 textView.setText(new DecimalFormat("###.####").format(result));
+                nextMenu.setVisibility(view.getVisibility());
+
             }
             isOperationClick = true;
         }
